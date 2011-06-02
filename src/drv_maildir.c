@@ -190,7 +190,7 @@ maildir_list( store_t *gctx,
 		if (stat( buf, &st ) || !S_ISDIR(st.st_mode))
 			continue;
 		isibx = !memcmp( buf, inbox, bl - 4 ) && !inbox[bl - 4];
-		if (!isibx && !strcmp( de->d_name, "INBOX" )) {
+		if (!isibx && !strcasecmp( de->d_name, "INBOX" )) {
 			warn( "Maildir warning: ignoring INBOX in %s\n", gctx->conf->path );
 			continue;
 		}
@@ -819,7 +819,7 @@ maildir_select( store_t *gctx, int create,
 #ifdef USE_DB
 	ctx->db = 0;
 #endif /* USE_DB */
-	if (!strcmp( gctx->name, "INBOX" ))
+	if (!strcasecmp( gctx->name, "INBOX" ))
 		gctx->path = nfstrdup( ((maildir_store_conf_t *)gctx->conf)->inbox );
 	else
 		nfasprintf( &gctx->path, "%s%s", gctx->conf->path, gctx->name );

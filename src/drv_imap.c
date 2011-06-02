@@ -797,7 +797,7 @@ parse_list_rsp( imap_store_t *ctx, char *cmd )
 	if (memcmp( arg, ctx->gen.conf->path, l ))
 		return;
 	arg += l;
-	if (l && !strcmp( arg, "INBOX" )) {
+	if (l && !strcasecmp( arg, "INBOX" )) {
 		warn( "IMAP warning: ignoring INBOX in %s\n", ctx->gen.conf->path );
 		return;
 	}
@@ -1434,7 +1434,7 @@ imap_select( store_t *gctx, int create,
 	free_generic_messages( gctx->msgs );
 	gctx->msgs = 0;
 
-	if (!strcmp( gctx->name, "INBOX" )) {
+	if (!strcasecmp( gctx->name, "INBOX" )) {
 		prefix = "";
 	} else {
 		prefix = ctx->prefix;
@@ -1679,7 +1679,7 @@ imap_store_msg( store_t *gctx, msg_data_t *data, int to_trash,
 		cmd->gen.param.to_trash = 1;
 	} else {
 		box = gctx->name;
-		prefix = !strcmp( box, "INBOX" ) ? "" : ctx->prefix;
+		prefix = !strcasecmp( box, "INBOX" ) ? "" : ctx->prefix;
 	}
 	imap_exec( ctx, &cmd->gen, imap_store_msg_p2,
 	           "APPEND \"%s%s\" %s", prefix, box, flagstr );

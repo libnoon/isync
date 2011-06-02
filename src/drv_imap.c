@@ -1438,6 +1438,11 @@ imap_select( store_t *gctx, int create,
 		prefix = "";
 	} else {
 		prefix = ctx->prefix;
+		if (!*prefix && !strcasecmp( gctx->name, "INBOX" )) {
+			error( "IMAP error: %s: cannot use unqualified %s. Did you mean INBOX?",
+			       gctx->conf->name, gctx->name );
+			return cb( DRV_BOX_BAD, aux );
+		}
 	}
 
 	ctx->gen.uidnext = 0;

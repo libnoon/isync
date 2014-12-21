@@ -838,10 +838,9 @@ load_state( sync_vars_t *svars )
 				error( "Error: invalid sync state entry at %s:%d\n", svars->dname, line );
 				goto jbail;
 			}
-			srec = nfmalloc( sizeof(*srec) );
+			srec = nfcalloc( sizeof(*srec) );
 			srec->uid[M] = t1;
 			srec->uid[S] = t2;
-			srec->status = 0;
 			s = fbuf;
 			if (*s == '<') {
 				s++;
@@ -859,9 +858,6 @@ load_state( sync_vars_t *svars )
 			debug( "  entry (%d,%d,%u,%s%s%s)\n", srec->uid[M], srec->uid[S], srec->flags,
 			       srec->status & S_DUMMY(M) ? "<" : "", srec->status & S_DUMMY(S) ? ">" : "",
 			       srec->status & S_EXPIRED ? "X" : "" );
-			srec->msg[M] = srec->msg[S] = 0;
-			srec->tuid[0] = 0;
-			srec->next = 0;
 			*svars->srecadd = srec;
 			svars->srecadd = &srec->next;
 			svars->nsrecs++;
@@ -932,7 +928,7 @@ load_state( sync_vars_t *svars )
 					svars->uidval[M] = t1;
 					svars->uidval[S] = t2;
 				} else if (c == '+') {
-					srec = nfmalloc( sizeof(*srec) );
+					srec = nfcalloc( sizeof(*srec) );
 					srec->uid[M] = t1;
 					srec->uid[S] = t2;
 					if (svars->newmaxuid[M] < t1)
@@ -940,11 +936,6 @@ load_state( sync_vars_t *svars )
 					if (svars->newmaxuid[S] < t2)
 						svars->newmaxuid[S] = t2;
 					debug( "  new entry(%d,%d)\n", t1, t2 );
-					srec->msg[M] = srec->msg[S] = 0;
-					srec->status = 0;
-					srec->flags = 0;
-					srec->tuid[0] = 0;
-					srec->next = 0;
 					*svars->srecadd = srec;
 					svars->srecadd = &srec->next;
 					svars->nsrecs++;
@@ -1608,7 +1599,6 @@ box_loaded( int sts, void *aux )
 			del[S] = no[S] && (srec->uid[S] > 0);
 
 			for (t = 0; t < 2; t++) {
-				srec->aflags[t] = srec->dflags[t] = 0;
 				if (srec->msg[t] && (srec->msg[t]->flags & F_DELETED))
 					srec->status |= S_DEL(t);
 				/* excludes (push) c.3) d.2) d.3) d.4) / (pull) b.3) d.7) d.8) d.9) */

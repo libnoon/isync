@@ -1575,6 +1575,12 @@ maildir_set_msg_flags( store_t *gctx, message_t *gmsg, int uid ATTR_UNUSED, int 
 	int j, ret, ol, fl, bbl, bl, tl;
 	char buf[_POSIX_PATH_MAX], nbuf[_POSIX_PATH_MAX];
 
+	if (!msg) {
+		/* This can happen if we are propagating flags one-way and the target message vanished. */
+		*(int *)0 = 0;
+		cb( DRV_MSG_BAD, aux );
+		return;
+	}
 	bbl = nfsnprintf( buf, sizeof(buf), "%s/", gctx->path );
 	memcpy( nbuf, gctx->path, bbl - 1 );
 	memcpy( nbuf + bbl - 1, "/cur/", 5 );

@@ -1412,7 +1412,7 @@ maildir_again( maildir_store_t *ctx, maildir_message_t *msg,
 }
 
 static void
-maildir_fetch_msg( store_t *gctx, message_t *gmsg, msg_data_t *data,
+maildir_fetch_msg( store_t *gctx, message_t *gmsg, msg_data_t *data, int minimal ATTR_UNUSED,
                    void (*cb)( int sts, void *aux ), void *aux )
 {
 	maildir_store_t *ctx = (maildir_store_t *)gctx;

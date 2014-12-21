@@ -40,9 +40,9 @@ messages.
 
 use MULTIAPPEND and FETCH with multiple messages.
 
-create dummies describing MIME structure of messages bigger than MaxSize.
-flagging the dummy would fetch the real message. possibly remove --renew.
-note that all interaction needs to happen on the slave side probably.
+MaxSize improvements:
+- dummies should contain MIME structure and (reasonably sized) text parts.
+- server-side dummies are of limited use ...
 
 don't SELECT boxes unless really needed; in particular not for appending,
 and in write-only mode not before changes are made.

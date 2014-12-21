@@ -966,7 +966,7 @@ parse_fetch_rsp( imap_store_t *ctx, list_t *list, char *s ATTR_UNUSED )
 					size = atoi( tmp->val );
 				else
 					error( "IMAP error: unable to parse RFC822.SIZE\n" );
-			} else if (!strcmp( "BODY[]", tmp->val )) {
+			} else if (!strcmp( "BODY[]", tmp->val ) || !strcmp( "BODY[HEADER]", tmp->val )) {
 				tmp = tmp->next;
 				if (is_atom( tmp )) {
 					body = tmp->val;
@@ -2456,7 +2456,7 @@ imap_submit_load( imap_store_t *ctx, const char *buf, int flags, struct imap_cmd
 static void imap_fetch_msg_p2( imap_store_t *ctx, struct imap_cmd *gcmd, int response );
 
 static void
-imap_fetch_msg( store_t *ctx, message_t *msg, msg_data_t *data,
+imap_fetch_msg( store_t *ctx, message_t *msg, msg_data_t *data, int minimal,
                 void (*cb)( int sts, void *aux ), void *aux )
 {
 	struct imap_cmd_fetch_msg *cmd;
@@ -2466,9 +2466,10 @@ imap_fetch_msg( store_t *ctx, message_t *msg, msg_data_t *data,
 	cmd->msg_data = data;
 	data->data = 0;
 	imap_exec( (imap_store_t *)ctx, &cmd->gen.gen, imap_fetch_msg_p2,
-	           "UID FETCH %d (%s%sBODY.PEEK[])", msg->uid,
+	           "UID FETCH %d (%s%sBODY.PEEK[%s])", msg->uid,
 	           !(msg->status & M_FLAGS) ? "FLAGS " : "",
-	           (data->date== -1) ? "INTERNALDATE " : "" );
+	           (data->date== -1) ? "INTERNALDATE " : "",
+	           minimal ? "HEADER" : "" );
 }
 
 static void

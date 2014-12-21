@@ -160,8 +160,15 @@ directory.
 ..
 .TP
 \fBMaxSize\fR \fIsize\fR[\fBk\fR|\fBm\fR][\fBb\fR]
-Messages larger than that will not be propagated into this Store.
-This is useful for weeding out messages with large attachments.
+Messages larger than \fIsize\fR will have only a small placeholder message
+propagated into this Store. To propagate the full message, it must be
+flagged in either Store, which can be done retroactively.
+This is useful for avoiding downloading messages with large attachments
+unless they are actually needed.
+Caveat: Setting a size limit on a Store you never read directly (which is
+typically the case for servers) is not recommended, as you may never
+notice that affected messages were not propagated to it.
+.br
 \fBK\fR and \fBM\fR can be appended to the size to specify KiBytes resp.
 MeBytes instead of bytes. \fBB\fR is accepted but superfluous.
 If \fIsize\fR is 0, the maximum message size is \fBunlimited\fR.

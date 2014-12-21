@@ -216,8 +216,10 @@ struct driver {
 	void (*load_box)( store_t *ctx, int minuid, int maxuid, int newuid, int seenuid, int_array_t excs,
 	                  void (*cb)( int sts, void *aux ), void *aux );
 
-	/* Fetch the contents and flags of the given message from the current mailbox. */
-	void (*fetch_msg)( store_t *ctx, message_t *msg, msg_data_t *data,
+	/* Fetch the contents and flags of the given message from the current mailbox.
+	 * If minimal is non-zero, fetch only a placeholder for the requested message -
+	 * ideally, this is precisely the header, but it may be more. */
+	void (*fetch_msg)( store_t *ctx, message_t *msg, msg_data_t *data, int minimal,
 	                   void (*cb)( int sts, void *aux ), void *aux );
 
 	/* Store the given message to either the current mailbox or the trash folder.

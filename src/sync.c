@@ -1346,9 +1346,12 @@ box_opened2( sync_vars_t *svars, int t )
 				else
 					assert( !"sync record with stray TUID" );
 			}
-			for (t = 0; t < 2; t++)
-				if (!(~srec->status & (S_DUMMY(M)|S_DUMMY(S))) && srec->uid[t] > 0)
-					opts[t] |= OPEN_SETFLAGS;
+			if (!(~srec->status & (S_DUMMY(M)|S_DUMMY(S)))) {
+				if (srec->uid[M] > 0)
+					opts[M] |= OPEN_SETFLAGS;
+				if (srec->uid[S] > 0)
+					opts[S] |= OPEN_SETFLAGS;
+			}
 		}
 	svars->drv[M]->prepare_load_box( ctx[M], opts[M] );
 	svars->drv[S]->prepare_load_box( ctx[S], opts[S] );
@@ -1732,8 +1735,7 @@ box_loaded( int sts, void *aux )
 					}
 					Fprintf( svars->jfp, "# %d %d %." stringify(TUIDL) "s\n", srec->uid[M], srec->uid[S], srec->tuid );
 					debug( "  -> %sing message, TUID %." stringify(TUIDL) "s\n", str_hl[t], srec->tuid );
-					nflags = (tmsg->flags & ~srec->dflags[1-t]) | srec->aflags[1-t]; /* For upgraded placeholders */
-					if (!(nflags & F_FLAGGED) && tmsg->size > svars->chan->stores[t]->max_size) {
+					if (srec->uid[t] != -1 && !(tmsg->flags & F_FLAGGED) && tmsg->size > svars->chan->stores[t]->max_size) {
 						srec->status |= S_DUMMY(t);
 						Fprintf( svars->jfp, "p %d %d\n", srec->uid[M], srec->uid[S] );
 						debug( "  -> placeholder only - too big\n" );

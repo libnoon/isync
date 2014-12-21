@@ -1700,18 +1700,13 @@ box_loaded( int sts, void *aux )
 					if (srec) {
 						debug( "  -> pair(%d,%d) exists\n", srec->uid[M], srec->uid[S] );
 					} else {
-						srec = nfmalloc( sizeof(*srec) );
-						srec->next = 0;
+						srec = nfcalloc( sizeof(*srec) );
 						*svars->srecadd = srec;
 						svars->srecadd = &srec->next;
 						svars->nsrecs++;
-						srec->status = 0;
-						srec->flags = 0;
-						srec->tuid[0] = 0;
 						srec->uid[1-t] = tmsg->uid;
 						srec->uid[t] = -2;
 						srec->msg[1-t] = tmsg;
-						srec->msg[t] = 0;
 						tmsg->srec = srec;
 						if (svars->newmaxuid[1-t] < tmsg->uid)
 							svars->newmaxuid[1-t] = tmsg->uid;

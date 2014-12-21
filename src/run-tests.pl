@@ -634,7 +634,7 @@ sub test($$$@)
 	print "Testing: ".$ttl." ...\n";
 	mkchan($$sx[0], $$sx[1], @{ $$sx[2] });
 	&writecfg(@sfx);
-
+exit 1;
 	my ($xc, @ret) = runsync("-J");
 	if ($xc) {
 		print "Input:\n";
